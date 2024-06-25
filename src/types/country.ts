@@ -1,10 +1,11 @@
 export type Country = {
   capital: string[];
-  area: number;
+  cca2: string;
   flags: {
     png: string;
   };
   name: {
     common: string;
   };
+  selected: boolean;
 };
