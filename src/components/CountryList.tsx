@@ -1,25 +1,69 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../api/api";
 import { Country } from "../types/country";
 import CountryCard from "./CountryCard";
 
+const MAX_DATA_SIZE = 250;
+const DATA_PER_PAGE = 50;
+
 function CountryList() {
+  const divRef = useRef<HTMLDivElement>(null);
+
   const [countries, setCountries] = useState<Country[]>([]);
+  const [visibleCountries, setVisibleCountries] = useState<Country[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
+
+  const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
     const getContriesData: () => Promise<void> = async () => {
       const data: Country[] = await api.getContries();
       setCountries(data);
+      setVisibleCountries(data.slice(0, DATA_PER_PAGE));
     };
 
     getContriesData();
   }, []);
 
+  const moreGetCountriesData = useCallback(() => {
+    if (DATA_PER_PAGE * page > MAX_DATA_SIZE) return;
+    const nextPage = page + 1;
+
+    setVisibleCountries((prev) => [
+      ...prev,
+      ...countries.slice(page * DATA_PER_PAGE, nextPage * DATA_PER_PAGE),
+    ]);
+
+    setPage(nextPage);
+  }, [countries, page]);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          moreGetCountriesData();
+        }
+      },
+      { threshold: 0.01 }
+    );
+
+    const currentDiv = divRef.current;
+
+    if (currentDiv) {
+      obs.observe(currentDiv);
+    }
+
+    return () => {
+      if (currentDiv) {
+        obs.unobserve(currentDiv);
+      }
+    };
+  }, [moreGetCountriesData]);
+
   const selectedCountiesHandler: (country: Country) => void = (
     country: Country
   ) => {
-    setCountries((prev) =>
+    setVisibleCountries((prev) =>
       prev?.map((c) => (c.cca2 === country.cca2 ? { ...c, selected: true } : c))
     );
     setSelectedCountries((prev) => [...(prev || []), country]);
@@ -28,7 +72,7 @@ function CountryList() {
   const unSelectedCountiesHandler: (country: Country) => void = (
     country: Country
   ) => {
-    setCountries((prev) =>
+    setVisibleCountries((prev) =>
       prev?.map((c) =>
         c.cca2 === country.cca2 ? { ...c, selected: false } : c
       )
@@ -62,7 +106,7 @@ function CountryList() {
       <section className="flex flex-col items-center gap-y-8 p-8 w-full">
         <h1 className="text-3xl font-bold">Countries</h1>
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6  w-full">
-          {countries
+          {visibleCountries
             ?.filter((country) => !country.selected)
             .map((country) => (
               <li key={country.cca2}>
@@ -74,6 +118,7 @@ function CountryList() {
             ))}
         </ul>
       </section>
+      <div ref={divRef}> 여기? </div>
     </div>
   );
 }
