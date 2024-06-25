@@ -21,7 +21,22 @@ divide-y-2"
         <h3 className="text-xl font-semibold line-clamp-1">
           {country.name.common}
         </h3>
-        <p className="text-gray-600 font-medium">{country.capital}</p>
+        <div className="text-xs font-bold flex gap-x-1 items-baseline divide-x-2 divide-gray-600">
+          <p className="text-sm">수도</p>
+          <p className="pl-1 text-gray-600">{country.capital}</p>
+        </div>
+        <div className="text-xs font-bold flex gap-x-1 items-baseline divide-x-2 divide-gray-600">
+          <p className="text-sm">인구</p>
+          <p className="pl-1 text-gray-600">
+            {(country.population / 10000).toFixed(2)}만
+          </p>
+        </div>
+        <div className="text-xs font-bold flex gap-x-1 items-baseline divide-x-2 divide-gray-600">
+          <p className="text-sm">면적</p>
+          <p className="pl-1 text-gray-600">
+            {country.area.toLocaleString()}km²
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -39,6 +39,8 @@ function CountryList() {
     );
   };
 
+  // console.log("countries___", countries);
+
   return (
     <div className="mx-auto flex flex-col items-center justify-center max-w-[1280px] divide-y-2 select-none">
       <section className="flex flex-col items-center gap-y-8 p-8 w-full">
