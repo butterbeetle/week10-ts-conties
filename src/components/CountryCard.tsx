@@ -13,7 +13,7 @@ divide-y-2"
       onClick={() => onClickHandler(country)}
     >
       <img
-        className="w-20 aspect-video mx-auto"
+        className="w-20 aspect-video mx-auto border border-gray-500"
         src={country.flags.png}
         alt={`${country.cca2}-flag`}
       />
