@@ -4,26 +4,30 @@ import { Country } from "../types/country";
 import CountryCard from "./CountryCard";
 
 function CountryList() {
-  const [countries, setCountries] = useState<Country[]>();
-  const [selectedCountries, setSelectedCountries] = useState<Country[]>();
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
 
   useEffect(() => {
-    const getContriesData = async () => {
-      const data = await api.getContries();
+    const getContriesData: () => Promise<void> = async () => {
+      const data: Country[] = await api.getContries();
       setCountries(data);
     };
 
     getContriesData();
   }, []);
 
-  const selectedCountiesHandler = (country: Country) => {
+  const selectedCountiesHandler: (country: Country) => void = (
+    country: Country
+  ) => {
     setCountries((prev) =>
       prev?.map((c) => (c.cca2 === country.cca2 ? { ...c, selected: true } : c))
     );
     setSelectedCountries((prev) => [...(prev || []), country]);
   };
 
-  const unSelectedCountiesHandler = (country: Country) => {
+  const unSelectedCountiesHandler: (country: Country) => void = (
+    country: Country
+  ) => {
     setCountries((prev) =>
       prev?.map((c) =>
         c.cca2 === country.cca2 ? { ...c, selected: false } : c
