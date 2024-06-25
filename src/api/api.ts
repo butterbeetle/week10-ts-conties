@@ -1,13 +1,11 @@
 import axios, { AxiosInstance } from "axios";
 import { Country } from "../types/country";
 
-const URL = "https://restcountries.com/v3.1";
-
 class API {
   private client: AxiosInstance;
 
   constructor() {
-    this.client = axios.create({ baseURL: URL });
+    this.client = axios.create({ baseURL: import.meta.env.VITE_COUNTRY_URL });
   }
 
   async getContries() {
