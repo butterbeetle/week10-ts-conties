@@ -118,7 +118,7 @@ function CountryList() {
             ))}
         </ul>
       </section>
-      <div ref={divRef}> 여기? </div>
+      <div ref={divRef} />
     </div>
   );
 }
