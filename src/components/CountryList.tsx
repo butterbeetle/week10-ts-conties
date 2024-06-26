@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../api/api";
 import { Country } from "../types/country";
 import CountryCard from "./CountryCard";
+import SkeletonCard from "./SkeletonCard";
 
 const MAX_DATA_SIZE = 250;
 const DATA_PER_PAGE = 50;
@@ -14,7 +15,7 @@ function CountryList() {
   const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
 
   const [page, setPage] = useState<number>(1);
-
+  // console.log("countries", countries);
   useEffect(() => {
     const getContriesData: () => Promise<void> = async () => {
       const data: Country[] = await api.getContries();
@@ -110,6 +111,12 @@ function CountryList() {
       <section className="flex flex-col items-center gap-y-8 p-8 w-full">
         <h1 className="text-3xl font-bold">Countries</h1>
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6  w-full">
+          {!countries.length &&
+            Array.from({ length: 16 }).map((_, idx) => (
+              <li key={idx}>
+                <SkeletonCard />
+              </li>
+            ))}
           {visibleCountries
             ?.filter((country) => !country.selected)
             .map((country) => (
