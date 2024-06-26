@@ -26,6 +26,7 @@ function CountryList() {
   }, []);
 
   const moreGetCountriesData = useCallback(() => {
+    // console.log("AAA", page, DATA_PER_PAGE * page, MAX_DATA_SIZE);
     if (DATA_PER_PAGE * page > MAX_DATA_SIZE) return;
     const nextPage = page + 1;
 
@@ -33,13 +34,16 @@ function CountryList() {
       ...prev,
       ...countries.slice(page * DATA_PER_PAGE, nextPage * DATA_PER_PAGE),
     ]);
-
+    // console.log("BBB", page, page * DATA_PER_PAGE, nextPage * DATA_PER_PAGE);
     setPage(nextPage);
   }, [countries, page]);
+
+  // console.log("VISIBLE___", visibleCountries);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
+        // console.log("ENTRIES___", entries[0]);
         if (entries[0].isIntersecting) {
           moreGetCountriesData();
         }
@@ -49,7 +53,7 @@ function CountryList() {
 
     const currentDiv = divRef.current;
 
-    if (currentDiv) {
+    if (currentDiv && visibleCountries.length) {
       obs.observe(currentDiv);
     }
 
@@ -58,7 +62,7 @@ function CountryList() {
         obs.unobserve(currentDiv);
       }
     };
-  }, [moreGetCountriesData]);
+  }, [moreGetCountriesData, visibleCountries]);
 
   const selectedCountiesHandler: (country: Country) => void = (
     country: Country
