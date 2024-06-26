@@ -118,7 +118,7 @@ function CountryList() {
             ))}
         </ul>
       </section>
-      <div ref={divRef} />
+      <div ref={divRef} className="bg-[#f0f0f0] h-10 w-full" />
     </div>
   );
 }
