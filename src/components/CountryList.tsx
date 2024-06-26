@@ -14,6 +14,8 @@ function CountryList() {
   const [visibleCountries, setVisibleCountries] = useState<Country[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
 
+  const [sort, setSort] = useState({ area: "desc", population: "desc" });
+
   const [page, setPage] = useState<number>(1);
   // console.log("countries", countries);
   useEffect(() => {
@@ -88,7 +90,31 @@ function CountryList() {
     );
   };
 
-  // console.log("countries___", countries);
+  const sortByPopulation = () => {
+    if (sort.population === "desc") {
+      setVisibleCountries((prev) =>
+        prev.sort((a, b) => a.population - b.population)
+      );
+      setSort((prev) => ({ ...prev, population: "asc" }));
+    } else {
+      setVisibleCountries((prev) =>
+        prev.sort((a, b) => b.population - a.population)
+      );
+      setSort((prev) => ({ ...prev, population: "desc" }));
+    }
+  };
+
+  const sortByArea = () => {
+    if (sort.area === "desc") {
+      setVisibleCountries((prev) => prev.sort((a, b) => a.area - b.area));
+      setSort((prev) => ({ ...prev, area: "asc" }));
+    } else {
+      setVisibleCountries((prev) => prev.sort((a, b) => b.area - a.area));
+      setSort((prev) => ({ ...prev, area: "desc" }));
+    }
+  };
+
+  // console.log(visibleCountries);
 
   return (
     <div className="mx-auto flex flex-col items-center justify-center max-w-[1280px] divide-y-2 select-none">
@@ -109,7 +135,27 @@ function CountryList() {
         </ul>
       </section>
       <section className="flex flex-col items-center gap-y-8 p-8 w-full">
-        <h1 className="text-3xl font-bold">Countries</h1>
+        <div className="flex flex-col w-full justify-center items-center gap-y-4">
+          <h1 className="text-3xl font-bold ">Countries</h1>
+          <div className="flex gap-x-2">
+            <button
+              onClick={sortByArea}
+              className="py-1 px-2 text-xs bg-blue-400 text-white rounded 
+            hover:bg-blue-500 hover:shadow-md
+             active:bg-blue-600 active:shadow-[inset_0_2px_8px_gray]"
+            >
+              면적 {sort.area === "asc" ? "▲" : "▼"}
+            </button>
+            <button
+              onClick={sortByPopulation}
+              className="py-1 px-2 text-xs bg-blue-400 text-white rounded 
+            hover:bg-blue-500 hover:shadow-md
+             active:bg-blue-600 active:shadow-[inset_0_2px_8px_gray]"
+            >
+              인구 {sort.population === "asc" ? "▲" : "▼"}
+            </button>
+          </div>
+        </div>
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6  w-full">
           {!countries.length &&
             Array.from({ length: 16 }).map((_, idx) => (
