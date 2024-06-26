@@ -1,8 +1,8 @@
-import { Country } from "../types/country";
+import { CountryType } from "../types/country";
 
 interface CountryCardProps {
-  country: Country;
-  onClick: (country: Country) => void;
+  country: CountryType;
+  onClick: (country: CountryType) => void;
 }
 
 function CountryCard({ country, onClick: onClickHandler }: CountryCardProps) {

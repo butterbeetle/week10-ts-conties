@@ -1,4 +1,4 @@
-export type Country = {
+export type CountryType = {
   capital: string[];
   cca2: string;
   area: number;
@@ -10,4 +10,9 @@ export type Country = {
     common: string;
   };
   selected: boolean;
+};
+
+export type SortType = {
+  area: string;
+  population: string;
 };

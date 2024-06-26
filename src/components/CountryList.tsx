@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../api/api";
-import { Country } from "../types/country";
+import { CountryType, SortType } from "../types/country";
 import CountryCard from "./CountryCard";
 import SkeletonCard from "./SkeletonCard";
 
@@ -10,17 +10,20 @@ const DATA_PER_PAGE = 50;
 function CountryList() {
   const divRef = useRef<HTMLDivElement>(null);
 
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [visibleCountries, setVisibleCountries] = useState<Country[]>([]);
-  const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
+  const [countries, setCountries] = useState<CountryType[]>([]);
+  const [visibleCountries, setVisibleCountries] = useState<CountryType[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<CountryType[]>([]);
 
-  const [sort, setSort] = useState({ area: "desc", population: "desc" });
+  const [sort, setSort] = useState<SortType>({
+    area: "desc",
+    population: "desc",
+  });
 
   const [page, setPage] = useState<number>(1);
   // console.log("countries", countries);
   useEffect(() => {
     const getContriesData: () => Promise<void> = async () => {
-      const data: Country[] = await api.getContries();
+      const data: CountryType[] = await api.getContries();
       setCountries(data);
       setVisibleCountries(data.slice(0, DATA_PER_PAGE));
     };
@@ -67,8 +70,8 @@ function CountryList() {
     };
   }, [moreGetCountriesData, visibleCountries]);
 
-  const selectedCountiesHandler: (country: Country) => void = (
-    country: Country
+  const selectedCountiesHandler: (country: CountryType) => void = (
+    country: CountryType
   ) => {
     setVisibleCountries((prev) =>
       prev?.map((c) => (c.cca2 === country.cca2 ? { ...c, selected: true } : c))
@@ -76,8 +79,8 @@ function CountryList() {
     setSelectedCountries((prev) => [...(prev || []), country]);
   };
 
-  const unSelectedCountiesHandler: (country: Country) => void = (
-    country: Country
+  const unSelectedCountiesHandler: (country: CountryType) => void = (
+    country: CountryType
   ) => {
     setVisibleCountries((prev) =>
       prev?.map((c) =>
