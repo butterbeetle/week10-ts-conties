@@ -13,7 +13,7 @@ export type APICountryType = {
 };
 
 export type CountryType = {
-  capital: string[];
+  capital: string;
   cca2: string;
   area: number;
   population: number;

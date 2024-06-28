@@ -13,10 +13,10 @@ class API {
   async getContries(): Promise<CountryType[]> {
     const response = await this.client.get<APICountryType[]>("/all");
     const results = response.data;
-    const result = results.map((result) => {
+    const result: CountryType[] = results.map((result) => {
       return {
         cca2: result.cca2,
-        capital: result.capital,
+        capital: result.capital?.[0],
         area: result.area,
         population: result.population,
         flags: result.flags.png,
@@ -24,20 +24,16 @@ class API {
         selected: false,
       };
     });
-    // console.log("GET DATA___", result);
-
     return result;
   }
 
   async getSupabaseCountires(): Promise<CountryType[] | null> {
     const { data } = await this.supabase.from("country").select("*");
-    // console.log("GET SUPABASE COUNTIRES___", data);
     return data;
   }
 
   async saveCountries(countryData: CountryType) {
     const response = await this.supabase.from("country").insert(countryData);
-    // console.log(response);
     return response;
   }
 
