@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import supabase from "../supabase/supabase";
 import { APICountryType, CountryType } from "../types/country";
+import { Tables } from "../types/supabase";
 class API {
   private client: AxiosInstance;
   private supabase;
@@ -27,8 +28,11 @@ class API {
     return result;
   }
 
-  async getSupabaseCountires(): Promise<CountryType[] | null> {
-    const { data } = await this.supabase.from("country").select("*");
+  async getSupabaseCountires() {
+    const { data } = await this.supabase
+      .from("country")
+      .select("*")
+      .returns<Tables<"country">[] | null>();
     return data;
   }
 

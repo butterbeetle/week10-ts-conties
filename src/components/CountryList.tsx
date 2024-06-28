@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../api/api";
 import { CountryType, SortType } from "../types/country";
+import { Tables } from "../types/supabase";
 import CountryCard from "./CountryCard";
 import SkeletonCard from "./SkeletonCard";
 
@@ -16,7 +17,7 @@ function CountryList() {
   const [countries, setCountries] = useState<CountryType[]>([]);
   const [visibleCountries, setVisibleCountries] = useState<CountryType[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<
-    CountryType[] | null
+    Tables<"country">[] | null
   >([]);
 
   const [sort, setSort] = useState<SortType>({
@@ -29,13 +30,14 @@ function CountryList() {
   useEffect(() => {
     const getContriesData: () => Promise<void> = async () => {
       const data: CountryType[] = await api.getContries();
-      const saveData = await api.getSupabaseCountires();
+      const supabaseData: Tables<"country">[] | null =
+        await api.getSupabaseCountires();
       setCountries(data);
-      setSelectedCountries(saveData);
+      setSelectedCountries(supabaseData);
       setVisibleCountries(
         data
           .slice(0, DATA_PER_PAGE)
-          .filter((v) => !saveData?.some((s) => s.cca2 === v.cca2))
+          .filter((v) => !supabaseData?.some((s) => s.cca2 === v.cca2))
       );
     };
 
