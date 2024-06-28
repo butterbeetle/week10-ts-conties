@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import supabase from "../supabase/supabase";
 import { APICountryType } from "../types/country";
-import { Tables } from "../types/supabase";
+import { Tables, TablesInsert } from "../types/supabase";
 class API {
   private client: AxiosInstance;
   private supabase;
@@ -36,7 +36,7 @@ class API {
     return data;
   }
 
-  async saveCountries(countryData: Tables<"country">) {
+  async saveCountries(countryData: TablesInsert<"country">) {
     const response = await this.supabase.from("country").insert(countryData);
     return response;
   }
