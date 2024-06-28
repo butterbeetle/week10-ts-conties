@@ -1,4 +1,4 @@
-export type CountryType = {
+export type APICountryType = {
   capital: string[];
   cca2: string;
   area: number;
@@ -9,6 +9,16 @@ export type CountryType = {
   name: {
     common: string;
   };
+  selected: boolean;
+};
+
+export type CountryType = {
+  capital: string[];
+  cca2: string;
+  area: number;
+  population: number;
+  flags: string;
+  name: string;
   selected: boolean;
 };
 

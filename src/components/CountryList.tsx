@@ -7,12 +7,17 @@ import SkeletonCard from "./SkeletonCard";
 const MAX_DATA_SIZE = 250;
 const DATA_PER_PAGE = 50;
 
+// 선택 후 supabase에 저장
+// 불러올때
+
 function CountryList() {
   const divRef = useRef<HTMLDivElement>(null);
 
   const [countries, setCountries] = useState<CountryType[]>([]);
   const [visibleCountries, setVisibleCountries] = useState<CountryType[]>([]);
-  const [selectedCountries, setSelectedCountries] = useState<CountryType[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<
+    CountryType[] | null
+  >([]);
 
   const [sort, setSort] = useState<SortType>({
     area: "desc",
@@ -24,8 +29,14 @@ function CountryList() {
   useEffect(() => {
     const getContriesData: () => Promise<void> = async () => {
       const data: CountryType[] = await api.getContries();
+      const saveData = await api.getSupabaseCountires();
       setCountries(data);
-      setVisibleCountries(data.slice(0, DATA_PER_PAGE));
+      setSelectedCountries(saveData);
+      setVisibleCountries(
+        data
+          .slice(0, DATA_PER_PAGE)
+          .filter((v) => !saveData?.some((s) => s.cca2 === v.cca2))
+      );
     };
 
     getContriesData();
@@ -70,26 +81,31 @@ function CountryList() {
     };
   }, [moreGetCountriesData, visibleCountries]);
 
-  const selectedCountiesHandler: (country: CountryType) => void = (
-    country: CountryType
-  ) => {
+  const selectedCountiesHandler = (country: CountryType) => {
+    api.saveCountries(country);
     setVisibleCountries((prev) =>
       prev?.map((c) => (c.cca2 === country.cca2 ? { ...c, selected: true } : c))
     );
     setSelectedCountries((prev) => [...(prev || []), country]);
   };
 
-  const unSelectedCountiesHandler: (country: CountryType) => void = (
-    country: CountryType
-  ) => {
-    setVisibleCountries((prev) =>
-      prev?.map((c) =>
-        c.cca2 === country.cca2 ? { ...c, selected: false } : c
-      )
+  const unSelectedCountiesHandler = (country: CountryType) => {
+    api.deleteCountires(country.cca2);
+    // console.log(country);
+    setSelectedCountries((prev) =>
+      prev!.filter((c) => c.cca2 !== country.cca2)
     );
 
-    setSelectedCountries((prev) =>
-      prev?.filter((c) => c.cca2 !== country.cca2)
+    setVisibleCountries(() =>
+      countries
+        .slice(0, DATA_PER_PAGE)
+        .filter(
+          (v) =>
+            !selectedCountries
+              ?.filter((c) => c.cca2 !== country.cca2)
+              .some((s) => s.cca2 === v.cca2)
+        )
+        .map((c) => (c.cca2 === country.cca2 ? { ...c, selected: false } : c))
     );
   };
 
