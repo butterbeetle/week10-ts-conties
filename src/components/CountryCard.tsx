@@ -1,8 +1,8 @@
-import { CountryType } from "../types/country";
+import { Tables } from "../types/supabase";
 
 interface CountryCardProps {
-  country: CountryType;
-  onClick: (country: CountryType) => void;
+  country: Tables<"country">;
+  onClick: (country: Tables<"country">) => void;
 }
 
 function CountryCard({ country, onClick: onClickHandler }: CountryCardProps) {

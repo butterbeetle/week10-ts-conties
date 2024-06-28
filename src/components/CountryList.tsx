@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../api/api";
-import { CountryType, SortType } from "../types/country";
+import { SortType } from "../types/country";
 import { Tables } from "../types/supabase";
 import CountryCard from "./CountryCard";
 import SkeletonCard from "./SkeletonCard";
@@ -14,8 +14,10 @@ const DATA_PER_PAGE = 50;
 function CountryList() {
   const divRef = useRef<HTMLDivElement>(null);
 
-  const [countries, setCountries] = useState<CountryType[]>([]);
-  const [visibleCountries, setVisibleCountries] = useState<CountryType[]>([]);
+  const [countries, setCountries] = useState<Tables<"country">[]>([]);
+  const [visibleCountries, setVisibleCountries] = useState<Tables<"country">[]>(
+    []
+  );
   const [selectedCountries, setSelectedCountries] = useState<
     Tables<"country">[] | null
   >([]);
@@ -29,7 +31,7 @@ function CountryList() {
   // console.log("countries", countries);
   useEffect(() => {
     const getContriesData: () => Promise<void> = async () => {
-      const data: CountryType[] = await api.getContries();
+      const data: Tables<"country">[] = await api.getContries();
       const supabaseData: Tables<"country">[] | null =
         await api.getSupabaseCountires();
       setCountries(data);
@@ -83,7 +85,7 @@ function CountryList() {
     };
   }, [moreGetCountriesData, visibleCountries]);
 
-  const selectedCountiesHandler = (country: CountryType) => {
+  const selectedCountiesHandler = (country: Tables<"country">) => {
     api.saveCountries(country);
     setVisibleCountries((prev) =>
       prev?.map((c) => (c.cca2 === country.cca2 ? { ...c, selected: true } : c))
@@ -91,7 +93,7 @@ function CountryList() {
     setSelectedCountries((prev) => [...(prev || []), country]);
   };
 
-  const unSelectedCountiesHandler = (country: CountryType) => {
+  const unSelectedCountiesHandler = (country: Tables<"country">) => {
     api.deleteCountires(country.cca2);
     // console.log(country);
     setSelectedCountries((prev) =>
